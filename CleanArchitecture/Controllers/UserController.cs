@@ -2,42 +2,52 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Services.Interfaces;
+using Applications.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Applications.ViewModels;
+using CleanArchitecture.Extensions;
 
 namespace CleanArchitecture.Controllers
 {
-	[Authorize]
-	[Route("[controller]")]
-	[ApiController]
-	public class UserController : ControllerBase
-	{
-		private readonly IUserService _service;
+    [Authorize]
+    [Route("[controller]")]
+    [ApiController]
+    public class UserController : ControllerBase
+    {
+        private readonly IUserService _service;
 
-		public UserController(IUserService service)
-		{
-			_service = service;
-		}
+        public UserController(IUserService service)
+        {
+            _service = service;
+        }
 
-		[HttpGet(nameof(Get))]
-		public IActionResult Get()
-		{
-			var users = _service.GetAllUser();
-			return Ok(users);
-		}
-		[AllowAnonymous]
-		[HttpPost("Login")]
-		public async Task<IActionResult> LoginAsync([FromForm] string username, [FromForm] string password)
-		{			
-			var token = await _service.LoginAsync(username, password);
-			return Ok(new
-			{
-				Token = token.Item1,
-				RefreshToken = token.Item2
-			});
-		}
-	}
+        [HttpGet]
+        public IActionResult Get()
+        {
+            var users = _service.GetAllUser();
+            return Ok(users);
+        }
+        [AllowAnonymous]
+        [HttpPost("Login")]
+        public async Task<IActionResult> LoginAsync([FromBody] LoginRequestModel login)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState.GetErrorMessage());
+                }
+                var loginResponse = await _service.LoginAsync(login);
+                return Ok(loginResponse);
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine(ex);
+                return BadRequest(ex);
+            }
+        }
+    }
 }
