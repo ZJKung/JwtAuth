@@ -17,6 +17,12 @@ namespace Applications.Mapper
             CreateMap<User, LoginRequestModel>()
                 .ForMember(dto => dto.Username, opt => opt.MapFrom(x => x.Username))
                 .ForMember(dto => dto.Password, opt => opt.MapFrom(x => x.Password));
+
+            CreateMap<UserCreateModel, User>()
+                .ForMember(x => x.Username, y => y.MapFrom(z => z.Name))
+                .ForMember(x => x.Password, y => y.MapFrom(z => z.Secret));
+
+
         }
 
     }

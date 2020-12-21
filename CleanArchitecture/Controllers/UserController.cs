@@ -23,13 +23,32 @@ namespace CleanArchitecture.Controllers
         {
             _service = service;
         }
-
         [HttpGet]
-        public IActionResult Get()
+        public IActionResult GetAllUsers()
         {
             var users = _service.GetAllUser();
             return Ok(users);
         }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(Guid id)
+        {
+            var users = await _service.GetUserById(id);
+            if (users == null) return BadRequest("user not found");
+
+            return Ok(users);
+        }
+        //todo chango user to usercreate viewmodel
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] UserCreateModel user)
+        {
+            var newuser = await _service.CreateUser(user);
+
+            return Ok(newuser);
+        }
+
+
+
         [AllowAnonymous]
         [HttpPost("Login")]
         public async Task<IActionResult> LoginAsync([FromBody] LoginRequestModel login)

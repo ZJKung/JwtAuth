@@ -10,7 +10,7 @@ namespace Applications.Interfaces
 {
     public interface IUserService
     {
-        Task<User> CreateUser(User user);
+        Task<User> CreateUser(UserCreateModel user);
 
         IEnumerable<User> GetAllUser();
 

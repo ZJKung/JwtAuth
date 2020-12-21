@@ -24,8 +24,9 @@ namespace Applications.Services
             _mapper = mapper;
         }
 
-        public async Task<User> CreateUser(User user)
+        public async Task<User> CreateUser(UserCreateModel userCreate)
         {
+            var user = _mapper.Map<User>(userCreate);
             return await _repo.AddUser(user);
         }
 

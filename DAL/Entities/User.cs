@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DAL.Entities
 {
-    public class User
+    public class User : BaseModel
     {
         public Guid Id { get; set; }
 
